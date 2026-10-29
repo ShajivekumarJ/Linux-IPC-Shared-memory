@@ -1,5 +1,5 @@
 # Linux-IPC-Shared-memory
-Ex06-Linux IPC-Shared-memory
+## Ex06-Linux IPC-Shared-memory
 
 ## NAME: SHAJIVE KUMAR J 
 ## REGISTER: 212225230258
