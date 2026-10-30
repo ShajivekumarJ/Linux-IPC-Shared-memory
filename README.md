@@ -1,8 +1,8 @@
 # Linux-IPC-Shared-memory
 ## Ex06-Linux IPC-Shared-memory
+## NAME: SHAJIVE KUAMR J 
+## 212225230258
 
-## NAME: SHAJIVE KUMAR J 
-## REGISTER: 212225230258
 # AIM:
 To Write a C program that illustrates two processes communicating using shared memory.
 
@@ -25,38 +25,58 @@ Execute the C Program for the desired output.
 ## Write a C program that illustrates two processes communicating using shared memory.
 
 ```
-
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#include <sys/wait.h>
 
 int main()
 {
-	// Generate a unique key using ftok
-	key_t key = ftok(".", 65);
+    int shmid;
+    char *str;
 
-	// Get an identifier for the shared memory segment using shmget
-	int shmid = shmget(key, 1024, 0666 | IPC_CREAT);
-      printf("Shared memory id = %d \n",shmid);
-// Attach to the shared memory segment using shmat
-	char* str = (char*)shmat(shmid, (void*)0, 0);
-	
-    printf("Write Data : ");
-	fgets(str, 1024, stdin);
+    shmid = shmget(IPC_PRIVATE, 1024, IPC_CREAT | 0666);
 
-	printf("Data written in memory: %s\n", str);
+    if (shmid < 0)
+    {
+        perror("shmget");
+        return 1;
+    }
 
-	// Detach from the shared memory segment using shmdt
-	shmdt(str);
+    str = (char *)shmat(shmid, NULL, 0);
 
-	return 0;
+    if (str == (char *)-1)
+    {
+        perror("shmat");
+        shmctl(shmid, IPC_RMID, NULL);
+        return 1;
+    }
+
+    if (fork() == 0)
+    {
+        strcpy(str, "Hello from child process!");
+        printf("Child writes: %s\n", str);
+        shmdt(str);
+        exit(0);
+    }
+    else
+    {
+        wait(NULL);
+        printf("Parent reads: %s\n", str);
+    }
+
+    shmdt(str);
+    shmctl(shmid, IPC_RMID, NULL);
+
+    return 0;
 }
-
 ```
 
 ## OUTPUT
-
-<img width="2039" height="771" alt="image" src="https://github.com/user-attachments/assets/04b6d4c1-f50b-45e9-b326-fe7f0785e0cd" />
+<img width="607" height="195" alt="image" src="https://github.com/user-attachments/assets/7dcda535-9955-455f-86e8-d8b5c51a22e3" />
 
 
 # RESULT:
